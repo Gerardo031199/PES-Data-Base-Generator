@@ -82,10 +82,10 @@ class Gui(Tk):
         load_button_b = ttk.Button(self, text="Load File B", command=self.load_file_b)
         load_button_b.grid(row=4, column=3, padx=5, pady=5)
         
-        copy_to_b = ttk.Button(
+        self.copy_to_b = ttk.Button(
             self, 
             text="Copy to file B", 
-            command= lambda _ : self.copy_data_to_file(
+            command= lambda : self.copy_data_to_file(
                 src_file=self.file_a_data, 
                 dst_file=self.file_b_data,
                 src_tree=self.tree_a,
@@ -93,11 +93,12 @@ class Gui(Tk):
             ), 
             state="disabled"
         ) 
-        copy_to_b.grid(row=5, column=0, columnspan=2, pady=10)
-        copy_to_a = ttk.Button(
+        self.copy_to_b.grid(row=5, column=0, columnspan=2, pady=10)
+        
+        self.copy_to_a = ttk.Button(
             self, 
             text="Copy to file A", 
-            command= lambda _ : self.copy_data_to_file(
+            command= lambda : self.copy_data_to_file(
                 src_file=self.file_b_data, 
                 dst_file=self.file_a_data,
                 src_tree=self.tree_a,
@@ -106,7 +107,7 @@ class Gui(Tk):
             ), 
             state="disabled"
         ) 
-        copy_to_a.grid(row=5, column=2, columnspan=2, pady=10)
+        self.copy_to_a.grid(row=5, column=2, columnspan=2, pady=10)
         
         # Cargar nombres de archivos JSON en los comboboxes
         self.load_json_files('config/')
@@ -249,9 +250,15 @@ class Gui(Tk):
             self.edit_menu.entryconfig('Export', state="normal")
             self.edit_menu.entryconfig('Import', state="normal")
 
+            self.copy_to_b['state'] = 'normal'
+
+
         else:
             self.edit_menu.entryconfig('Export', state="disabled")
             self.edit_menu.entryconfig('Import', state="disabled")
+            self.copy_to_a['state'] = 'normal'
+
+            
                 
     def export_selected_segment(self):
         selected_items = self.tree_a.selection()

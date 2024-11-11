@@ -1,0 +1,159 @@
+-----------------------------------------------------------------
+OF a Savedata PES 2014
+-----------------------------------------------------------------
+Posicion inicial: 68024
+Posicion final: 1121711
+Longitud: 1053688 bytes  (offsets PES 2014 PS2, OF DECRIPT
+
+
+Posicion inicial: 10620 
+Posicion final: 1064307    
+Longitud: 1053688 bytes  (offsets PES 2014 PSP, ULES0159800001000.bin)
+ 
+-----------------------------------------------------------------
+Savedata a OF PES 2014
+-----------------------------------------------------------------
+Posicion inicial: 10620 
+Posicion final: 1064307    
+Longitud: 1053688 bytes  (offsets PES 2014 PSP, ULES0159800001000.bin) 
+
+Posicion inicial: 68024
+Posicion final: 1121711
+Longitud: 1053688 (offsets PES 2014 PS2, OF DECRIPT)    
+
+-----------------------------------------------------------------
+Savedata a OF PES 2013
+-----------------------------------------------------------------
+
+Posicion inicial: 7608
+Posicion final: 1070255
+Longitud: 1062648 (offsets PES 2013 PS2, OF DECRIPT)
+
+Posicion inicial: 10620 
+Posicion final: 1073267 
+Longitud 1062648 bytes  (offsets PES 2013 PSP, ULES0158000008000.bin) 
+
+-----------------------------------------------------------------
+OF a Savedata PES 2012
+-----------------------------------------------------------------
+Posicion inicial: 68024
+Posicion final: 1141767
+Longitud: 1073744 (offsets PES 2012 PS2, OF DECRIPT) 
+
+
+Posicion inicial: 10620 
+Posicion final: 1084363  
+Longitud: 1073744 bytes  (offsets PES 2012 PSP, ULUS1058600002000.bin) 
+
+-----------------------------------------------------------------
+OF a Savedata PES 2011
+-----------------------------------------------------------------
+
+Posicion inicial: 72120
+Posicion final: 1158957
+Longitud: 1086838 (offsets PES 2011 PS2, OF DECRIPT)   
+
+Posicion inicial: 10620 
+Posicion final: 1097457  
+Longitud: 1086838 bytes  (offsets PES 2012 PSP, ULUS1055300008000.bin) 
+
+-----------------------------------------------------------------
+
+-----------------------------------------------------------------
+
+
+¨¨¨¨¨¨¨¨ MAPA ULES0158000008000.bin ¨¨¨¨¨¨¨¨
+
+- nombre de estadios
+
+INICIO OFFSET 10620 a 11855
+
+- nombre de la copas
+
+INICIO OFFSET 11984 a 14799
+
+- nombre de los jogadores
+
+INICIO OFFSET 15104 a 650615
+
+- configuracoes das botas
+
+INICIO OFFSET 651732 a 652539
+
+- formación, números de camisetas, etc
+
+INICIO OFFSET 652540 a 671093
+
+- emblemas,nombre de las equipas para Master Liga,etc
+
+INICIO OFFSET 671094 a 754247
+
+- equipamentos dos clubes
+
+INICIO OFFSET 754260 a 869695
+
+- Logos,emblemas 16 cores y emblemas 128 cores
+
+INICIO OFFSET 869696 a 1072463
+
+(BESLES-556693013OPT)MAP
+
+UNKNOW_00047_00 -JUGADORES CARACTERISTICAS
+
+OF DECRYPT-- INICIO OFFSET Decimal 34920 - selecionar 612684 bytes
+
+UNKNOW_00047_01 -RELINK NOMINAS SELECCIONES
+
+OF DECRYPT-- INICIO OFFSET Decimal 655734 - selecionar 3450 bytes
+
+UNKNOW_00047_02 -RELINK TRANSFERENCIAS CLUBS
+
+OF DECRYPT-- INICIO OFFSET Decimal 659184 - selecionar 8896 bytes
+
+UNKNOW_00047_03 -NUMEROS CAMISETA SELECCIONESS
+OF DECRYPT-- INICIO OFFSET Decimal 649560 - selecionar 1725 bytes
+
+UNKNOW_00047_04 -NUMEROS CAMISETA CLUBS
+
+OF DECRYPT-- INICIO OFFSET Decimal 651285 - selecionar 4448 bytes
+
+
+
+
+
+¨¨¨¨¨¨¨¨ MAPA PES13_0000.DAT ¨¨¨¨¨¨¨¨
+
+
+DATABASE JUGADORES: inicio 252 fin 612811 longitud 612560
+
+
+NOMBRES DE ESTADIOS: inicio 616228 fin 617460 longitud 1233
+
+
+NOMBRES LIGAS Y COPAS: inicio 617592 fin 620402 longitud 4175
+
+
+NUMEROS CAMISETA SELECCIONES Y CLUBES : inicio 620700 fin 626872 longitud 6173
+
+
+RELINK TRANSFERS SELECCIONES Y CLUBES: inicio 626874 fin 639219 longitud 12346
+
+
+ALINEACIONES: inicio 639222 fin 710929 longitud 71708
+
+
+CONFIG KITS SELECCIONES Y CLUBES: inicio 733744 fin 848323 longitud 114580
+
+
+LOGOS: inicio 848569 fin 897175 longitud 48607
+
+
+NOMBRES CLUBES: inicio 897176 fin 908579 longitud 11404
+
+
+ESCUDOS: inicio 908784 fin 1064175 longitud 155392
+
+
+
+
+
