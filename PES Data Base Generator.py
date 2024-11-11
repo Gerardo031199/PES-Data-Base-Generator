@@ -181,7 +181,7 @@ class Gui(Tk):
 
             selected_config = self.combobox_a.get()
             if selected_config:
-                self.process_binary_file(file_path, selected_config, self.tree_a)
+                self.file_a_data = self.process_binary_file(file_path, selected_config, self.tree_a)
 
     def load_file_b(self):
         if not self.combobox_b.get():
@@ -199,14 +199,14 @@ class Gui(Tk):
 
             selected_config = self.combobox_b.get()
             if selected_config:
-                self.process_binary_file(file_path, selected_config, self.tree_b)
+                self.file_b_data = self.process_binary_file(file_path, selected_config, self.tree_b)
 
     def clean_table(self, tree):
         # Limpiamos la tabla antes de agregar los nuevos datos
         for item in tree.get_children():
             tree.delete(item)
 
-    def process_binary_file(self, file_path, config_name, tree):
+    def process_binary_file(self, file_path:str, config_name:str, tree:ttk.Treeview) -> bytearray:
 
         self.clean_table(tree)
 
@@ -215,10 +215,11 @@ class Gui(Tk):
             messagebox.showerror("Error", "No configuration loaded for the selected file.")
             return
 
+        data = bytearray()
+
         try:
             with open(file_path, "rb") as file:
-                data = file.read()  # Cargar todo el contenido del archivo en memoria
-                self.file_a_data = data  # Almacenar datos de File A
+                data = bytearray(file.read())  # Cargar todo el contenido del archivo en memoria
 
                 # Verificamos el tamaño del archivo
                 file_size = len(data)
@@ -233,7 +234,7 @@ class Gui(Tk):
                     if start_offset < 0 or (start_offset + size) > file_size or size <= 0:
                         self.clean_table(tree)
                         messagebox.showerror("Error", f"Offsets for section '{section_name}' are out of range in the binary file.")
-                        return
+                        return bytearray()
 
                     # Insertamos los datos en la tabla
                     tree.insert("", "end", values=(file_name, section_name, start_offset, size))
@@ -242,7 +243,8 @@ class Gui(Tk):
             print(f"Error: No se encontró el archivo {file_path}")
         except Exception as e:
             print(f"Error al procesar el archivo: {e}")
-            
+        
+        return data
 
     def on_tree_select(self, event):
         # Habilitar la opción de exportar si hay un segmento seleccionado
