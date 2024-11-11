@@ -112,7 +112,7 @@ class Gui(Tk):
         # Cargar nombres de archivos JSON en los comboboxes
         self.load_json_files('config/')
 
-    def get_item_from_tree_by_word(self, tree:ttk.Treeview, word:str, col:str):
+    def get_item_from_tree_by_word(self, tree:ttk.Treeview, word:str, col:int):
         for item in tree.get_children():
             value = tree.item(item, "values")[col]
             if value == word:
@@ -128,13 +128,13 @@ class Gui(Tk):
             return
 
         for item in selection:
-            item_values = src_tree.item(item).values
+            item_values = src_tree.item(item)["values"]
             _, section_name, offset, size = item_values
-            dst_tree_item = self.get_item_from_tree_by_word(dst_tree, section_name, "Section Name")
+            dst_tree_item = self.get_item_from_tree_by_word(dst_tree, section_name, 1)
             
             if dst_tree_item is None: continue
             
-            dst_item_values = dst_tree.item(dst_tree_item).values
+            dst_item_values = dst_tree.item(dst_tree_item)["values"]
             _, _, dst_offset, dst_size = dst_item_values
             
             self.copy_segment_data(dst_file, src_file, dst_offset, offset, dst_size, size)
