@@ -1,0 +1,116 @@
+{
+  "dataSections": [
+    {
+      "sectionName": "Stadium Names",
+      "fileName": "Unknown",
+      "offsetRange": {
+        "start": 68024,
+        "size": 1037
+      }
+    },
+    {
+      "sectionName": "League and Cup Names",
+      "fileName": "Unknown",
+      "offsetRange": {
+        "start": 69140,
+        "size": 1344
+      }
+    },
+    {
+      "sectionName": "Player Database",
+      "fileName": "Unknown_00051.bin_000",
+      "offsetRange": {
+        "start": 95088,
+        "size": 604128
+      }
+    },
+    {
+      "sectionName": "Boot Configuration",
+      "fileName": "Unknown_00056.bin_000",
+      "offsetRange": {
+        "start": 700208,
+        "size": 828
+      }
+    },
+    {
+      "sectionName": "National Team Jersey Numbers",
+      "fileName": "Unknown_00051.bin_003",
+      "offsetRange": {
+        "start": 701048,
+        "size": 1725
+      }
+    },
+    {
+      "sectionName": "Club Team Jersey Numbers",
+      "fileName": "Unknown_00051.bin_004",
+      "offsetRange": {
+        "start": 702773,
+        "size": 4448
+      }
+    },
+    {
+      "sectionName": "National Team Transfers Relink",
+      "fileName": "Unknown_00051.bin_001",
+      "offsetRange": {
+        "start": 707222,
+        "size": 3450
+      }
+    },
+    {
+      "sectionName": "Club Team Transfers Relink",
+      "fileName": "Unknown_00051.bin_002",
+      "offsetRange": {
+        "start": 710672,
+        "size": 8896
+      }
+    },
+    {
+      "sectionName": "Formation Configurations",
+      "fileName": "Unknown_00057_001",
+      "offsetRange": {
+        "start": 719570,
+        "size": 71708
+      }
+    },
+    {
+      "sectionName": "Club Names",
+      "fileName": "Unknown",
+      "offsetRange": {
+        "start": 791288,
+        "size": 11404
+      }
+    },
+    {
+      "sectionName": "National Team Kits Configuration",
+      "fileName": "Unknown_00058.bin_000",
+      "offsetRange": {
+        "start": 802740,
+        "size": 30552
+      }
+    },
+    {
+      "sectionName": "Club Team Kits Configuration",
+      "fileName": "Unknown_00058.bin_001",
+      "offsetRange": {
+        "start": 833292,
+        "size": 84240
+      }
+    },
+    {
+      "sectionName": "Logos",
+      "fileName": "Unknown",
+      "offsetRange": {
+        "start": 917564,
+        "size": 48607
+      }
+    },
+    {
+      "sectionName": "Team Shields",
+      "fileName": "Unknown",
+      "offsetRange": {
+        "start": 966185,
+        "size": 155392
+      }
+    }
+  ]
+}

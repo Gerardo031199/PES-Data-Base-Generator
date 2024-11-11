@@ -1,0 +1,68 @@
+{
+    "dataSections": [
+        {
+            "sectionName": "Base de datos de jugadores",
+            "fileName": "ID00063_000",
+            "offsetRange": {
+                "start": 128,
+                "size": 850888
+            }
+        },
+        {
+            "sectionName": "Designacion de jugadores en selecciones",
+            "fileName": "ID00063_001",
+            "offsetRange": {
+                "start": 869622,
+                "size": 3726
+            }
+        },
+        {
+            "sectionName": "Designacion de jugadores en clubes",
+            "fileName": "ID00063_002",
+            "offsetRange": {
+                "start": 873348,
+                "size": 13376
+            }
+        },
+        {
+            "sectionName": "Designacion de dorsales en selecciones",
+            "fileName": "ID00063_003",
+            "offsetRange": {
+                "start": 859726,
+                "size": 1863
+            }
+        },
+        {
+            "sectionName": "Designacion de dorsales en clubes",
+            "fileName": "ID00063_004",
+            "offsetRange": {
+                "start": 861589,
+                "size": 4448
+            }
+        },
+        {
+            "sectionName": "Configuracion de botas",
+            "fileName": "ID00068_000",
+            "offsetRange": {
+                "start": 852008,
+                "size": 828
+            }
+        },
+        {
+            "sectionName": "Configuracion kits Selecciones",
+            "fileName": "ID00070_000",
+            "offsetRange": {
+                "start": 1012328,
+                "size": 33288
+            }
+        },
+        {
+            "sectionName": "Configuracion kits Clubes",
+            "fileName": "ID00070_001",
+            "offsetRange": {
+                "start": 1045616,
+                "size": 84240
+            }
+        }
+    ]
+}

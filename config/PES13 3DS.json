@@ -1,0 +1,84 @@
+{
+    "dataSections": [
+        {
+            "sectionName": "Player Database",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 252,
+                "size": 612560
+            }
+        },
+        {
+            "sectionName": "Stadium Names",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 616228,
+                "size": 1233
+            }
+        },
+        {
+            "sectionName": "League and Cup Names",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 617592,
+                "size": 4175
+            }
+        },
+        {
+            "sectionName": "National and Club Jersey Numbers",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 620700,
+                "size": 6173
+            }
+        },
+        {
+            "sectionName": "National and Club Transfers Relink",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 626874,
+                "size": 12346
+            }
+        },
+        {
+            "sectionName": "Formations Configurations",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 639222,
+                "size": 71708
+            }
+        },
+        {
+            "sectionName": "National and Club Kits Configuration",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 733744,
+                "size": 114580
+            }
+        },
+        {
+            "sectionName": "Logos",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 848569,
+                "size": 48607
+            }
+        },
+        {
+            "sectionName": "Club Names",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 897176,
+                "size": 11404
+            }
+        },
+        {
+            "sectionName": "Team Shields",
+            "fileName": "Unknown",
+            "offsetRange": {
+                "start": 908784,
+                "size": 155392
+            }
+        }
+    ]
+}
