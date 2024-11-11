@@ -82,13 +82,61 @@ class Gui(Tk):
         load_button_b = ttk.Button(self, text="Load File B", command=self.load_file_b)
         load_button_b.grid(row=4, column=3, padx=5, pady=5)
         
-        copy_to_b = ttk.Button(self, text="Copy to file B", command=None, state="disabled") 
-        copy_to_b.grid(row=5, column=0, columnspan=2, pady=10) 
-        copy_to_a = ttk.Button(self, text="Copy to file A", command=None, state="disabled") 
+        copy_to_b = ttk.Button(
+            self, 
+            text="Copy to file B", 
+            command= lambda _ : self.copy_data_to_file(
+                src_file=self.file_a_data, 
+                dst_file=self.file_b_data,
+                src_tree=self.tree_a,
+                dst_tree=self.tree_b,
+            ), 
+            state="disabled"
+        ) 
+        copy_to_b.grid(row=5, column=0, columnspan=2, pady=10)
+        copy_to_a = ttk.Button(
+            self, 
+            text="Copy to file A", 
+            command= lambda _ : self.copy_data_to_file(
+                src_file=self.file_b_data, 
+                dst_file=self.file_a_data,
+                src_tree=self.tree_a,
+                dst_tree=self.tree_a,
+
+            ), 
+            state="disabled"
+        ) 
         copy_to_a.grid(row=5, column=2, columnspan=2, pady=10)
         
         # Cargar nombres de archivos JSON en los comboboxes
         self.load_json_files('config/')
+
+    def get_item_from_tree_by_word(self, tree:ttk.Treeview, word:str, col:str):
+        for item in tree.get_children():
+            value = tree.item(item, "values")[col]
+            if value == word:
+                return item
+        return None
+
+    def copy_data_to_file(self, src_file:bytearray, dst_file:bytearray, src_tree:ttk.Treeview, dst_tree:ttk.Treeview):
+        
+        selection = src_tree.selection()
+
+        if not selection:
+            messagebox.showerror("Error", f"Please first select one section to transfer")
+            return
+
+        for item in selection:
+            item_values = src_tree.item(item).values
+            _, section_name, offset, size = item_values
+            dst_tree_item = self.get_item_from_tree_by_word(dst_tree, section_name, "Section Name")
+            
+            if dst_tree_item is None: continue
+            
+            dst_item_values = dst_tree.item(dst_tree_item).values
+            _, _, dst_offset, dst_size = dst_item_values
+            
+            self.copy_segment_data(dst_file, src_file, dst_offset, offset, dst_size, size)
 
     def setup_tree_view(self, parent, **kwargs):
         tree = ttk.Treeview(parent, columns=("File", "Section Name", "Offset", "Size"), show="headings", height=14, **kwargs)
@@ -344,6 +392,25 @@ class Gui(Tk):
         self.file_a_data = (self.file_a_data[:start_offset] + new_data + self.file_a_data[end_offset:])
         
         messagebox.showinfo("Success", "Segmento actualizado exitosamente.")
+
+    def copy_segment_data(self, dst:bytearray, src:bytearray, dst_offset:int, src_offset:int, dst_size:int, src_size:int) -> None:
+        """This function will copy the data from one byte array into another given the following arguments
+
+        Args:
+            dst (bytearray): the destination byte array
+            src (bytearray): the source byte array
+            dst_offset (int): the destination offset from where the data starts
+            src_offset (int): the source offset from where the data starts
+            dst_size (int): the size of the destination data
+            src_size (int): the size of the source data
+
+        Raises:
+            Exception: Raise when the sizes dont match
+        """
+        if dst_size != src_size:
+            raise Exception("Source and destionation sizes don't match!")
+
+        dst[dst_offset:dst_offset + dst_size] = src[src_offset:src_offset + src_size]
 
     def on_closing(self):
         if messagebox.askokcancel("Exit", "Do you want to exit the program?"):
