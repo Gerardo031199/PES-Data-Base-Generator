@@ -5,8 +5,11 @@ from tkinter import ttk, Tk, messagebox, Menu, filedialog
 class Gui(Tk):
     def __init__(self):
         super().__init__()
-        self.file_a_data = None  # Variable para almacenar datos de File A
-        self.file_b_data = None 
+        self.data_file_a = None  # Variable para almacenar datos de File A
+        self.data_file_b = None 
+        
+        self.file_a_path = None  # Ruta de archivo A
+        self.file_b_path = None  # Ruta de archivo B
 
         self.appname = 'PES/WE/JL Data Base Generator - Converter'
         self.version = '0.7'
@@ -30,11 +33,10 @@ class Gui(Tk):
         file.add_separator()
         file.add_command(label='Exit', command=self.on_closing, accelerator="Ctrl+Q")
 
-        # Adding Export/Import Menu and commands
+        # Adding Export Menu and commands
         self.edit_menu = Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label='Export/Import', menu=self.edit_menu)
+        self.menubar.add_cascade(label='Export', menu=self.edit_menu)
         self.edit_menu.add_command(label='Export', command=self.export_selected_segment, state="disabled")
-        self.edit_menu.add_command(label='Import', command=self.import_selected_segment, state="disabled")
 
         # Etiquetas
         label_a = ttk.Label(self, text="File A")
@@ -64,8 +66,9 @@ class Gui(Tk):
         self.tree_b = self.setup_tree_view(self)
         self.tree_b.grid(row=3, column=2, columnspan=2, padx=10, pady=5)
 
-        # Bind para habilitar exportación
-        self.tree_a.bind("<ButtonRelease-1>", self.on_tree_select)
+        self.tree_a.bind("<<TreeviewSelect>>", self.on_tree_select)
+        self.tree_b.bind("<<TreeviewSelect>>", self.on_tree_select)
+
 
         # Input y botón para cargar archivos
         self.entry_a = ttk.Entry(self, width=45)
@@ -88,8 +91,9 @@ class Gui(Tk):
             self, 
             text="Copy to file B", 
             command= lambda : self.copy_data_to_file(
-                src_file=self.file_a_data, 
-                dst_file=self.file_b_data,
+                src_data=self.data_file_a, 
+                dst_data=self.data_file_b,
+                dst_file_path=self.file_b_path, 
                 src_tree=self.tree_a,
                 dst_tree=self.tree_b,
             ), 
@@ -101,11 +105,11 @@ class Gui(Tk):
             self, 
             text="Copy to file A", 
             command= lambda : self.copy_data_to_file(
-                src_file=self.file_b_data, 
-                dst_file=self.file_a_data,
-                src_tree=self.tree_a,
+                src_data=self.data_file_b, 
+                dst_data=self.data_file_a,
+                dst_file_path=self.file_a_path, 
+                src_tree=self.tree_b,
                 dst_tree=self.tree_a,
-
             ), 
             state="disabled"
         ) 
@@ -120,31 +124,6 @@ class Gui(Tk):
             if value == word:
                 return item
         return None
-
-    def copy_data_to_file(self, src_file:bytearray, dst_file:bytearray, src_tree:ttk.Treeview, dst_tree:ttk.Treeview):
-        
-        selection = src_tree.selection()
-
-        if not selection:
-            messagebox.showerror("Error", f"Please first select one section to transfer")
-            return
-
-        copied_files = 0  
-
-        for item in selection:
-            item_values = src_tree.item(item)["values"]
-            _, section_name, offset, size = item_values
-            dst_tree_item = self.get_item_from_tree_by_word(dst_tree, section_name, 1)
-            
-            if dst_tree_item is None: continue
-            
-            dst_item_values = dst_tree.item(dst_tree_item)["values"]
-            _, _, dst_offset, dst_size = dst_item_values
-            
-            self.copy_segment_data(dst_file, src_file, dst_offset, offset, dst_size, size)
-        
-        # Mensaje informando al usuario del resultado
-        messagebox.showinfo("Copied Files", f"{copied_files} section(s) have been successfully copied.")
 
     def setup_tree_view(self, parent, **kwargs):
         tree = ttk.Treeview(parent, columns=("File", "Section Name", "Offset", "Size"), show="headings", height=14, **kwargs)
@@ -188,7 +167,10 @@ class Gui(Tk):
 
             selected_config = self.combobox_a.get()
             if selected_config:
-                self.file_a_data = self.process_binary_file(file_path, selected_config, self.tree_a)
+                
+                self.file_a_path = file_path
+
+                self.data_file_a = self.process_binary_file(file_path, selected_config, self.tree_a)
 
     def load_file_b(self):
         if not self.combobox_b.get():
@@ -206,15 +188,17 @@ class Gui(Tk):
 
             selected_config = self.combobox_b.get()
             if selected_config:
-                self.file_b_data = self.process_binary_file(file_path, selected_config, self.tree_b)
+                self.file_b_path = file_path
+
+                self.data_file_b = self.process_binary_file(file_path, selected_config, self.tree_b)
 
     def clean_table(self, tree):
         # Limpiamos la tabla antes de agregar los nuevos datos
         if tree == self.tree_a:
-            self.file_a_data = None
+            self.data_file_a = None
 
         elif tree == self.tree_b:
-            self.file_b_data = None
+            self.data_file_b = None
 
         if tree.get_children():
             for item in tree.get_children():
@@ -259,47 +243,77 @@ class Gui(Tk):
             print(f"Error al procesar el archivo: {e}")
         
         return data
+    
+    def copy_data_to_file(self, src_data:bytearray, dst_data:bytearray, dst_file_path:str, src_tree:ttk.Treeview, dst_tree:ttk.Treeview):
+        
+        selection = src_tree.selection()
+
+        if not selection:
+            messagebox.showerror("Error", f"Please first select one section to transfer")
+            return
+
+        for item in selection:
+            item_values = src_tree.item(item)["values"]
+            _, section_name, offset, size = item_values
+            dst_tree_item = self.get_item_from_tree_by_word(dst_tree, section_name, 1)
+            
+            if dst_tree_item is None: continue
+            
+            dst_item_values = dst_tree.item(dst_tree_item)["values"]
+            _, _, dst_offset, dst_size = dst_item_values
+            
+            self.copy_segment_data(dst_data, src_data, dst_offset, dst_file_path, offset, dst_size, size)
+        
+
+    def copy_segment_data(self, dst:bytearray, src:bytearray, dst_offset:int, dst_file_path:str, src_offset:int, dst_size:int, src_size:int) -> None:
+        """This function will copy the data from one byte array into another given the following arguments
+
+        Args:
+            dst (bytearray): the destination byte array
+            src (bytearray): the source byte array
+            dst_offset (int): the destination offset from where the data starts
+            src_offset (int): the source offset from where the data starts
+            dst_size (int): the size of the destination data
+            src_size (int): the size of the source data
+
+        Raises:
+            Exception: Raise when the sizes dont match
+        """
+
+        if dst_size != src_size:
+            raise Exception("Source and destionation sizes don't match!")
+
+        dst[dst_offset:dst_offset + dst_size] = src[src_offset:src_offset + src_size]
+
+
+        self.save_file(dst, dst_file_path)
+
+
+    def save_file(self, file_data, file_path):
+        # Guarda los datos modificados en el archivo
+        with open(file_path, 'wb') as file:
+            file.write(file_data)
+            print(f"File saved to {file_path}")
+
 
     def on_tree_select(self, event):
         # Obtiene el árbol que generó el evento (tree_a o tree_b)
         selected_tree = event.widget
+        has_selection = bool(selected_tree.selection())
 
-        # Configuración para tree_a
-        if selected_tree == self.tree_a:
-            # Habilitar o deshabilitar según la selección en tree_a
-            if self.tree_a.selection():
-                self.edit_menu.entryconfig('Export', state="normal")
-                self.edit_menu.entryconfig('Import', state="normal")
-                
-                # Habilita 'copy_to_b' si hay datos en file_b_data
-                if self.file_b_data:
-                    self.copy_to_b['state'] = 'normal'
-            else:
-                # Deshabilita las opciones para tree_a si no hay selección
-                self.edit_menu.entryconfig('Export', state="disabled")
-                self.edit_menu.entryconfig('Import', state="disabled")
-                self.copy_to_b['state'] = 'disabled'
-
-        # Configuración para tree_b
-        elif selected_tree == self.tree_b:
-            # Habilitar o deshabilitar según la selección en tree_b
-            if self.tree_b.selection():
-                self.edit_menu.entryconfig('Export', state="normal")
-                self.edit_menu.entryconfig('Import', state="normal")
-
-                # Habilita 'copy_to_a' si hay datos en file_a_data
-                if self.file_a_data:
-                    self.copy_to_a['state'] = 'normal'
-            else:
-                # Deshabilita las opciones para tree_b si no hay selección
-                self.edit_menu.entryconfig('Export', state="disabled")
-                self.edit_menu.entryconfig('Import', state="disabled")
-                self.copy_to_a['state'] = 'disabled'
-
+        print(f"Selection in {selected_tree}: {has_selection}")
         
+        # Determina si la selección activa o desactiva el botón de Export
+        self.edit_menu.entryconfig('Export', state="normal" if has_selection else "disabled")
 
-            
+        # Configura los botones de copia según la tabla y los datos asociados
+        if selected_tree == self.tree_a:
+            self.copy_to_b['state'] = 'normal' if has_selection and self.data_file_b else 'disabled'
+        elif selected_tree == self.tree_b:
+            self.copy_to_a['state'] = 'normal' if has_selection and self.data_file_a else 'disabled'
 
+
+    
             
                 
     def export_selected_segment(self):
@@ -321,7 +335,7 @@ class Gui(Tk):
             if file_name.lower() == "unknown":
                 continue
 
-            data_to_export = self.file_a_data[start_offset : start_offset + size]
+            data_to_export = self.data_file_a[start_offset : start_offset + size]
 
             save_path = os.path.join(save_directory, f"{file_name}.bin")
             try:
@@ -337,129 +351,8 @@ class Gui(Tk):
 
         messagebox.showinfo("Success", f"Selected segments exported to {save_directory}")
         
-            
-    def import_selected_segment(self):
-        # Obtener elementos seleccionados en la tabla
-        selected_items = self.tree_a.selection()
-        
-        if not selected_items:
-            messagebox.showwarning("Warning", "Please select a segment to import.")
-            return
 
-        # Caso de selección única
-        if len(selected_items) == 1:
-            # Solo un elemento seleccionado: preguntar por un archivo individual
-            segment_info = self.tree_a.item(selected_items[0])["values"]
-            section_name = segment_info[1]  # Nombre de la sección
 
-            # Pedir al usuario que seleccione el archivo para importar
-            file_path = filedialog.askopenfilename(title="Select File to Import", initialfile=f"{section_name}.bin",
-                                                filetypes=[("Binary Files", "*.bin"), ("All Files", "*.*")])
-
-            if file_path:
-                self.process_imported_file(file_path, segment_info)
-
-        # Caso de selección múltiple
-        else:
-            # Múltiples elementos seleccionados: preguntar por el directorio
-            directory_path = filedialog.askdirectory(title="Select Directory to Import Files From")
-            if not directory_path:
-                return  # El usuario canceló la selección
-
-            missing_files = []
-            for item in selected_items:
-                
-                segment_info = self.tree_a.item(item)["values"]
-                section_name = segment_info[1]  # Nombre de la sección
-
-                file_name = segment_info[0]  # Nombre de la sección
-                
-                # Construir la ruta esperada del archivo
-                expected_file_path = os.path.join(directory_path, f"{section_name}.bin")
-                
-                if os.path.exists(expected_file_path):
-                    # Importar si el archivo existe
-                    self.process_imported_file(expected_file_path, segment_info)
-                else:
-                    # Si falta el archivo, agregarlo a la lista de archivos faltantes
-                    missing_files.append(f"{section_name}.bin")
-
-            # Si hay archivos faltantes, preguntar al usuario si desea buscarlos manualmente
-            for missing_file in missing_files:
-                result = messagebox.askyesno("File Not Found", f"The file '{missing_file}' was not found in the selected directory. Do you want to search for it manually?")
-                if result:
-                    file_path = filedialog.askopenfilename(title=f"Locate {missing_file}", initialfile=missing_file, filetypes=[("Binary Files", "*.bin"), ("All Files", "*.*")])
-                    if file_path:
-                        segment_info = next((self.tree_a.item(item)["values"] for item in selected_items 
-                                            if self.tree_a.item(item)["values"][1] + ".bin" == missing_file), None)
-                        if segment_info:
-                            self.process_imported_file(file_path, segment_info)
-
-    def process_imported_file(self, file_path, segment_info):
-
-        file_name = segment_info[0]  # 
-        section_name = segment_info[1]  # Nombre de la sección
-        start_offset = segment_info[2]        # Offset de inicio
-
-        try:
-            # Abrir el archivo en modo binario y leer los datos en el rango específico
-            with open(file_path, "rb") as file:
-                file.seek(start_offset)  # Ir al offset específico del segmento
-                new_data = file.read()  # Leer el tamaño específico de datos
-
-            # Aquí puedes realizar el procesamiento específico del segmento.
-            # En este ejemplo, asumimos que tienes una función `update_segment_data` que actualiza el segmento en la interfaz o en la estructura de datos.
-            self.update_segment_data(start_offset, new_data)
-
-            # Mensaje de éxito
-            messagebox.showinfo("Success", f"The segment '{section_name}' has been successfully imported.")
-
-        except FileNotFoundError:
-            messagebox.showerror("File Error", f"The file '{file_path}' was not found.")
-        except IOError as e:
-            messagebox.showerror("Read Error", f"An error occurred while reading the file: {e}")
-        except Exception as e:
-            print(e)
-            messagebox.showerror("Processing Error", f"An unexpected error occurred: {e}")
-
-    def update_segment_data(self, start_offset, new_data):
-
-        end_offset = start_offset + len(new_data)
-        
-        # Verifica que los offsets están dentro del rango de self.file_a_data
-        #if start_offset < 0 or end_offset > len(self.file_a_data):
-        #    messagebox.showerror("Error", "Offset fuera de los límites de los datos.")
-        #    return
-
-        # Verifica que la longitud de new_data coincida con el tamaño esperado
-        expected_size = end_offset - start_offset
-        if len(new_data) != expected_size:
-            messagebox.showerror("Error", f"El tamaño de los datos nuevos ({len(new_data)} bytes) no coincide con el tamaño esperado ({expected_size} bytes).")
-            return
-        
-        # Actualiza el rango correspondiente en self.file_a_data con los nuevos datos
-        self.file_a_data = (self.file_a_data[:start_offset] + new_data + self.file_a_data[end_offset:])
-        
-        messagebox.showinfo("Success", "Segmento actualizado exitosamente.")
-
-    def copy_segment_data(self, dst:bytearray, src:bytearray, dst_offset:int, src_offset:int, dst_size:int, src_size:int) -> None:
-        """This function will copy the data from one byte array into another given the following arguments
-
-        Args:
-            dst (bytearray): the destination byte array
-            src (bytearray): the source byte array
-            dst_offset (int): the destination offset from where the data starts
-            src_offset (int): the source offset from where the data starts
-            dst_size (int): the size of the destination data
-            src_size (int): the size of the source data
-
-        Raises:
-            Exception: Raise when the sizes dont match
-        """
-        if dst_size != src_size:
-            raise Exception("Source and destionation sizes don't match!")
-
-        dst[dst_offset:dst_offset + dst_size] = src[src_offset:src_offset + src_size]
 
     def on_closing(self):
         if messagebox.askokcancel("Exit", "Do you want to exit the program?"):
