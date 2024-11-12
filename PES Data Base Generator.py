@@ -261,21 +261,44 @@ class Gui(Tk):
         return data
 
     def on_tree_select(self, event):
-        # Habilitar la opción de exportar si hay un segmento seleccionado
-        if self.tree_a.selection():
-            self.edit_menu.entryconfig('Export', state="normal")
-            self.edit_menu.entryconfig('Import', state="normal")
+        # Obtiene el árbol que generó el evento (tree_a o tree_b)
+        selected_tree = event.widget
 
-            if self.file_b_data:
-                self.copy_to_b['state'] = 'normal'
+        # Configuración para tree_a
+        if selected_tree == self.tree_a:
+            # Habilitar o deshabilitar según la selección en tree_a
+            if self.tree_a.selection():
+                self.edit_menu.entryconfig('Export', state="normal")
+                self.edit_menu.entryconfig('Import', state="normal")
+                
+                # Habilita 'copy_to_b' si hay datos en file_b_data
+                if self.file_b_data:
+                    self.copy_to_b['state'] = 'normal'
+            else:
+                # Deshabilita las opciones para tree_a si no hay selección
+                self.edit_menu.entryconfig('Export', state="disabled")
+                self.edit_menu.entryconfig('Import', state="disabled")
+                self.copy_to_b['state'] = 'disabled'
 
+        # Configuración para tree_b
+        elif selected_tree == self.tree_b:
+            # Habilitar o deshabilitar según la selección en tree_b
+            if self.tree_b.selection():
+                self.edit_menu.entryconfig('Export', state="normal")
+                self.edit_menu.entryconfig('Import', state="normal")
 
-        else:
-            self.edit_menu.entryconfig('Export', state="disabled")
-            self.edit_menu.entryconfig('Import', state="disabled")
+                # Habilita 'copy_to_a' si hay datos en file_a_data
+                if self.file_a_data:
+                    self.copy_to_a['state'] = 'normal'
+            else:
+                # Deshabilita las opciones para tree_b si no hay selección
+                self.edit_menu.entryconfig('Export', state="disabled")
+                self.edit_menu.entryconfig('Import', state="disabled")
+                self.copy_to_a['state'] = 'disabled'
+
+        
+
             
-            if self.file_b_data:
-                self.copy_to_a['state'] = 'normal'
 
             
                 
