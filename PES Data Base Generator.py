@@ -42,12 +42,14 @@ class Gui(Tk):
 
         self.combobox_a = ttk.Combobox(self, width=50, state="readonly")
         self.combobox_a.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
+        self.combobox_a.bind("<<ComboboxSelected>>", lambda event: self.clean_table(self.tree_a))
 
         label_b = ttk.Label(self, text="File B")
         label_b.grid(row=0, column=2, columnspan=2, padx=10, pady=5)
 
         self.combobox_b = ttk.Combobox(self, width=50, state="readonly")
         self.combobox_b.grid(row=1, column=2, columnspan=2, padx=10, pady=5)
+        self.combobox_b.bind("<<ComboboxSelected>>", lambda event: self.clean_table(self.tree_b))
 
         # Etiquetas de tablas
         table_label_a = ttk.Label(self, text="Content of File A")
@@ -127,6 +129,8 @@ class Gui(Tk):
             messagebox.showerror("Error", f"Please first select one section to transfer")
             return
 
+        copied_files = 0  
+
         for item in selection:
             item_values = src_tree.item(item)["values"]
             _, section_name, offset, size = item_values
@@ -138,6 +142,9 @@ class Gui(Tk):
             _, _, dst_offset, dst_size = dst_item_values
             
             self.copy_segment_data(dst_file, src_file, dst_offset, offset, dst_size, size)
+        
+        # Mensaje informando al usuario del resultado
+        messagebox.showinfo("Copied Files", f"{copied_files} section(s) have been successfully copied.")
 
     def setup_tree_view(self, parent, **kwargs):
         tree = ttk.Treeview(parent, columns=("File", "Section Name", "Offset", "Size"), show="headings", height=14, **kwargs)
@@ -203,8 +210,15 @@ class Gui(Tk):
 
     def clean_table(self, tree):
         # Limpiamos la tabla antes de agregar los nuevos datos
-        for item in tree.get_children():
-            tree.delete(item)
+        if tree == self.tree_a:
+            self.file_a_data = None
+
+        elif tree == self.tree_b:
+            self.file_b_data = None
+
+        if tree.get_children():
+            for item in tree.get_children():
+                tree.delete(item)
 
     def process_binary_file(self, file_path:str, config_name:str, tree:ttk.Treeview) -> bytearray:
 
@@ -252,13 +266,16 @@ class Gui(Tk):
             self.edit_menu.entryconfig('Export', state="normal")
             self.edit_menu.entryconfig('Import', state="normal")
 
-            self.copy_to_b['state'] = 'normal'
+            if self.file_b_data:
+                self.copy_to_b['state'] = 'normal'
 
 
         else:
             self.edit_menu.entryconfig('Export', state="disabled")
             self.edit_menu.entryconfig('Import', state="disabled")
-            self.copy_to_a['state'] = 'normal'
+            
+            if self.file_b_data:
+                self.copy_to_a['state'] = 'normal'
 
             
                 
